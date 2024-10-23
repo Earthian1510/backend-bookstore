@@ -3,7 +3,7 @@ const cors = require("cors")
 const app = express()
 
 const { initializeDatabase } = require("./db/connection.db")
-const { Books } = require("./models/books.model")
+const { BookDB } = require("./models/books.model")
 
 app.use(cors())
 app.use(express.json())
@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 
 app.get("/books", async (req, res) => {
     try{
-        const allBooks = await Books.find();
+        const allBooks = await BookDB.find();
         res.json(allBooks);
     }
     catch(error) {
@@ -28,7 +28,7 @@ app.post("/books", async (req, res) => {
     const { bookName, author, genre } = req.body;
 
     try {
-        const bookData = new Books({ bookName, author, genre })
+        const bookData = new BookDB({ bookName, author, genre })
         await bookData.save()
         res.status(201).json(bookData)
     }
@@ -43,7 +43,7 @@ app.put("/books/:id", async (req, res) => {
     const updateBook = req.body;
 
     try{
-        const updatedBook = await Books.findByIdAndUpdate(bookId, updateBook, {new: true})
+        const updatedBook = await BookDB.findByIdAndUpdate(bookId, updateBook, {new: true})
         if(!updatedBook) {
             return res.status(404).json({ message: "book not found"})
         }
@@ -61,7 +61,7 @@ app.delete("/books/:id", async (req, res) => {
     const bookId = req.params.id 
 
     try{
-        const deletedBook = await Books.findByIdAndDelete(bookId)
+        const deletedBook = await BookDB.findByIdAndDelete(bookId)
         if(!deletedBook){
             return res.status(404).json({ error: "Book not found" })
         }
